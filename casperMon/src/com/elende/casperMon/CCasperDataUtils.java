@@ -3,6 +3,11 @@ package com.elende.casperMon;
 public class CCasperDataUtils {
 	
 	
+	/*
+	 * Connect to MySQL database (CasPer), and run various queries.
+	 * 
+	 * 
+	 */
 	
 	
 	public static int GetReferralsIn()

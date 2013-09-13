@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class CUpTime {
 
 	
-	 public static long GetSystemUpTime()
+	 public static String GetSystemUpTime()
 	 {
 		 long upTime=0L;
 		 //try to get uptime from /proc/uptim eon LInux
@@ -29,7 +29,26 @@ public class CUpTime {
 			 upTime = System.nanoTime();
 		 }
 		 
-		return upTime;
+		 
+		 
+		 long second = (upTime / 1000) % 60;
+		 long minute = (upTime / (1000 * 60)) % 60;
+		 long hour = (upTime / (1000 * 60 * 60)) % 24;
+		 
+		 
+		 long day = (uptime / (1000 * 60 * 60 * 24));
+
+		 
+				 
+				 String time = String.format("%02d:%02d:%02d:%d", hour, minute, second, upTime);
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		return time;
 	 
 	 }
 	 

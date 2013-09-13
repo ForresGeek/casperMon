@@ -17,8 +17,11 @@ public class TestCDiskSpaceUtils {
 	}
 
 	@Test
-	public void test() {
-		fail("Not yet implemented"); // TODO
+	public void testDiskSpace() {
+		
+		String sSpace = CDiskSpaceUtils.GetDiskSpace("/Users");
+		
+		System.out.println("space:"+sSpace);
 	}
 
 }

@@ -5,18 +5,17 @@ import org.apache.commons.io.FileUtils;
 import java.io.IOException;
 
 
-
-
 public class CDiskSpaceUtils {
 
 
-	public String GetDiskSpace(String sPath) 
+	public static String GetDiskSpace(String sPath) 
 	{
 		String sSpace="";
 
 		try{
 			long freeSpaceInKB = FileSystemUtils.freeSpaceKb(sPath);
 			long freeSpaceInGB = freeSpaceInKB / FileUtils.ONE_MB;
+			sSpace = Long.toString(freeSpaceInKB)+"Kbytes";
 			} 
 		
 		catch (IOException e) {
