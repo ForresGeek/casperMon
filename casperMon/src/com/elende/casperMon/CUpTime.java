@@ -36,7 +36,7 @@ public class CUpTime {
 		 long hour = (upTime / (1000 * 60 * 60)) % 24;
 		 
 		 
-		 long day = (uptime / (1000 * 60 * 60 * 24));
+		 long day = (upTime / (1000 * 60 * 60 * 24));
 
 		 
 				 

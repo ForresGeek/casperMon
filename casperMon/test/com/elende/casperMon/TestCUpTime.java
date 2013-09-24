@@ -9,8 +9,8 @@ public class TestCUpTime {
 	@Test
 	public void testGetSystemUpTime() {
 		
-	long luptime = CUpTime.GetSystemUpTime();
-	System.out.println("Uptime:"+Long.toString(luptime));
+	String luptime = CUpTime.GetSystemUpTime();
+	System.out.println("Uptime:"+luptime);
 	//assert.assertTrue(    luptime > 37000L);
 	
 	}
