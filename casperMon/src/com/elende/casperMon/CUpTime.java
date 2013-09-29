@@ -34,19 +34,12 @@ public class CUpTime {
 		 long second = (upTime / 1000) % 60;
 		 long minute = (upTime / (1000 * 60)) % 60;
 		 long hour = (upTime / (1000 * 60 * 60)) % 24;
-		 
-		 
 		 long day = (upTime / (1000 * 60 * 60 * 24));
 
-		 
-				 
-				 String time = String.format("%02d:%02d:%02d:%d", hour, minute, second, upTime);
-		 
-		 
-		 
-		 
-		 
-		 
+		 		 
+		 String time = String.format("%02d:%02d:%02d:%d", hour, minute, second, upTime);
+		 		 
+	 		 
 		 
 		return time;
 	 

@@ -8,9 +8,9 @@ import net.imed_portal.MonitorSoap;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-public class SkeletonTask implements Runnable {
+public class StatusTask implements Runnable {
 	
-	public static final Logger LOGGER =LogManager.getLogger("com.elende.caspermon.skeletontask");
+	public static final Logger LOGGER =LogManager.getLogger("com.elende.caspermon.statustask");
 	
 	private MonitorSoap proxy = null;	
 	
@@ -50,16 +50,14 @@ public class SkeletonTask implements Runnable {
 	}
 
 	
-	public SkeletonTask(MonitorSoap sp,String username,String pwd)
+	public StatusTask(MonitorSoap sp,String username,String pwd)
 	{
 		//Read my init properties.
-		 System.out.println("Skeleton Task Init");
+		 System.out.println("Status Task Init");
 			
 			this.setPwd(pwd);
 			this.setUsername(username);
-			this.setProxy(sp);
-		 
-		 
+			this.setProxy(sp);	 
 	}
 	
 	
@@ -94,7 +92,8 @@ public class SkeletonTask implements Runnable {
 		{
 			// Collect facts & figures
 			
-		   
+		  boolean ret =  wrapper.PutStatusCheck();
+		  LOGGER.debug("STATUSCHECK: "+String.valueOf(ret));
 			
 		}
 		

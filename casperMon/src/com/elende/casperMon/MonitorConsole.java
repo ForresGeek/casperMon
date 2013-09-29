@@ -11,6 +11,9 @@ import java.util.concurrent.TimeUnit;
 import net.imed_portal.Monitor;
 import net.imed_portal.MonitorSoap;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -20,7 +23,7 @@ public class MonitorConsole {
 
 	static Properties props;
 	public static final Logger LOGGER =LogManager.getLogger("com.elende.caspermon.monitorconsole"); 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		// TODO Auto-generated method stub
 		
 	
@@ -35,99 +38,142 @@ public class MonitorConsole {
 		boolean bLoggedIn = false;
 		boolean bReportingAvailable =false;
 		boolean bServiceAvailable =false;
-		
-		
-		props = readProperties();
-		
-		if (props!=null){
+		int iRetries = 5;
+		MonitorSoap sp = null;
+
 			 LOGGER.debug("Read Properties");
-			 wsdl = props.getProperty("heridian.wsdl","http://www.imed-portal.net/cievert_monitor_ws/monitor.asmx?wsdl");
-			 username = props.getProperty("heridian.systemId","CIEVERT001");
-			 pwd = props.getProperty("heridian.pwd","cievert001");		
-		}
-		else
-		{
-		 LOGGER.warn("Failed to read props file - using defaults");
-		}
-		
-		
-		
-		
-			try {
+			 
+			 try{
+			 Configuration config = new PropertiesConfiguration("caspermon.properties");
+			 
+			 wsdl = config.getString("heridian.wsdl","http://www.imed-portal.net/cievert_monitor_ws/monitor.asmx?wsdl");
+			 username = config.getString("heridian.systemId","CIEVERT001");
+			 pwd = config.getString("heridian.pwd","cievert001");		
+			 }
+			 catch (ConfigurationException cex)
+			 {
+				 LOGGER.fatal("Can't get config",cex);
+				 return ;
+			 }
+			 
+	
+			 boolean bInit =false;
+			 
+			 while (!bInit && iRetries > 0 ){
+			 
+			 try {
+					
 					Monitor monitor = new Monitor(new java.net.URL(wsdl));
-					MonitorSoap sp = monitor.getMonitorSoap();
-		
-				
+					sp = monitor.getMonitorSoap();
+	
+					
 					CImedWrapper imed = new CImedWrapper(sp,username,pwd);
-				
+						
+					//Check if service is available
 					bServiceAvailable = imed.CheckServiceAvailable();
 					LOGGER.info("Service Available:"+bServiceAvailable);
 				
+					//Check if reporting is available
 					bReportingAvailable = imed.CheckReportingAvailable();
 					LOGGER.info("Reporting Available:"+bReportingAvailable);
+			
+					//If Service is available, and reporting is available, then get the heartbeat and status check interval
 					
-				
-			} catch (MalformedURLException e) {
+					if(bServiceAvailable && bReportingAvailable)
+					{
+					
+						try{
+							iStatusCheck = imed.GetStatusCheckFreq();
+							iStatusCheck = 127;
+							LOGGER.debug("Status check:"+String.valueOf(iStatusCheck));
+					
+					
+							
+							iHeartBeat = imed.GetHeartBeatFreq();
+							iHeartBeat = 27;
+							LOGGER.debug("Heartbeat:"+String.valueOf(iHeartBeat));
+					
+							bInit = true;
+						}
+						catch(Exception ex)
+						{
+							LOGGER.error("Error getting intervals",ex);
+							bInit = false;
+						}
+					}
+			 	} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				LOGGER.error("Malformed URL", e);
 				e.printStackTrace();
-			}
+				}
 			
+			  if(!bInit)
+			  {
+				  iRetries = iRetries -1
+						  ;
+				  LOGGER.info("failed to connect to IMed, retrying....."+ String.valueOf(iRetries));
+				  Thread.sleep(60*1000);
+			  }
+			 
 	
-		
+			 }
+			 
+			 
+			 if(bInit)
+			 {
+			  LOGGER.debug("Initialized,scheduling daemons");
+			 
+			  	 	final ScheduledExecutorService heartbeatscheduler = Executors.newScheduledThreadPool(1);
+			  	 	HeartBeatTask hb = new HeartBeatTask(sp,username,pwd);
+			        final ScheduledFuture<?> hbHandler = heartbeatscheduler.scheduleAtFixedRate(hb, iHeartBeat, iHeartBeat, java.util.concurrent.TimeUnit.SECONDS);
+			     
+			        System.out.println("HeartBeat Task Scheduled");
+			        
+			  
+			        
+			        
+			  
+			 
+
+			  	 	final ScheduledExecutorService statusscheduler = Executors.newScheduledThreadPool(1);
+			  	 	StatusTask sb = new StatusTask(sp,username,pwd);
+			        final ScheduledFuture<?> statHandler = statusscheduler.scheduleAtFixedRate(sb, iStatusCheck, iStatusCheck, java.util.concurrent.TimeUnit.SECONDS);
+			     
+			        
+			        
+			        
+			        System.out.println("StatusCheck Task Scheduled");
+			 
+			        
+			        
+
+	
+			  
+			 }
+			 
+			 else
+			 {
+				 LOGGER.info("Failed to intialize after retries.... exiting");
+				 return;
+			 }
+	}
+
+			 
 		
 		
 		/*
-		
-		
-		     final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-		     final SkeletonTask pollTask = new SkeletonTask();
-
-		   
-		        final ScheduledFuture<?> pollHandler =
-		            scheduler.scheduleAtFixedRate(pollTask, 10, 10, java.util.concurrent.TimeUnit.SECONDS);
 		     
-		        System.out.println("Task Scheduled");
-		        
 		        scheduler.schedule(new Runnable() {
 		                public void run() { System.out.println("Killing Poller"); pollHandler.cancel(true); }
 		            }, 2 * 60, java.util.concurrent.TimeUnit.SECONDS);
 		
 		        System.out.println("Terminator Scheduled");
 		*/
-	}
-
-	
-	
-
-	
-
 	
 	
 	
 	
 	
-	private static Properties readProperties() 
-	{
-		
-		LOGGER.debug("Reading props file");
-		Properties props =null;
-		
-		try{
-			
-	
-		//load a properties file from class path, inside static method
-			props.load(App.class.getClassLoader().getResourceAsStream("/casperMon/caspermon.properties"));
-			props.list(System.out);
-		}
-		catch(Exception ex)
-		{
-			LOGGER.error("can't find props file",ex);
-			props = null;
-		}
-		return props;
-		
-	}
 }
 	
 	

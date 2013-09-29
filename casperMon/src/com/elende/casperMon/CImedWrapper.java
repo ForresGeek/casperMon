@@ -108,6 +108,63 @@ public class CImedWrapper {
 	
 	
 	
+	public boolean PutHeartBeat()
+	{
+		boolean bRet=false;
+		try{
+		LOGGER.trace("Sending Heartbeat");
+		bRet = proxy.putHEARTBEATPULSE(this.getUsername());
+		}
+		catch(Exception ex)
+		{
+			LOGGER.error("Error sending Heartbeat",ex);
+		}
+		return bRet;
+	}
+	
+	
+	
+	public boolean PutStatusCheck()
+	{
+		boolean bRet=false;
+		try{
+		LOGGER.trace("Sending Status");
+		
+		
+		//gather facts & figures for the status check/
+		
+		
+		String sFileSystems[] = CDiskSpaceUtils.GetFileSystemList();
+		String sTemp = CTemp.GetSystemTemperature();
+		String sUpTime = CUpTime.GetSystemUpTime();
+		
+		String sPatientsIN = String.valueOf(CCasperDataUtils.GetPatientsIn());
+		String sReferralsIN = String.valueOf(CCasperDataUtils.GetReferralsIn());
+		String sReferralsLastHour = String.valueOf(CCasperDataUtils.GetReferralsLastHour());
+		
+		
+		String sUsers = String.valueOf(CUpTime.GetUsers());
+		String sUsersLastHour = String.valueOf(CUpTime.GetUsersLastHour());
+		
+		String[] sDisk = new String[]{ CDiskSpaceUtils.GetDiskSpace(sFileSystems[0]),CDiskSpaceUtils.GetDiskSpace(sFileSystems[1]),CDiskSpaceUtils.GetDiskSpace(sFileSystems[2]),CDiskSpaceUtils.GetDiskSpace(sFileSystems[3]),CDiskSpaceUtils.GetDiskSpace(sFileSystems[4])};
+		
+
+			String logMessage = String.format("DISK0: %s\nDISK1: %s\nDISK2: %s\nDISK3: %s\nDISK4: %s\nTemp: %s\nUptime: %s\nPatients: %s\nReferrals: %s\nReferrals Last Hour: %s\nUsers: %s\nUsers Last Hour: %s", sDisk[0],sDisk[1],sDisk[2],sDisk[3],sDisk[4], sTemp, sUpTime, sPatientsIN, sReferralsIN, sReferralsLastHour, sUsers, sUsersLastHour);
+		
+			LOGGER.debug("Status Check:" + logMessage);
+		
+			bRet = proxy.putSTATUSCHECKPACKET(username, sDisk[0],sDisk[1],sDisk[2],sDisk[3],sDisk[4], sTemp, sUpTime, sPatientsIN, sReferralsIN, sReferralsLastHour, sUsers, sUsersLastHour);
+
+			
+		}
+		catch(Exception ex)
+		{
+			LOGGER.error("Error sending Heartbeat",ex);
+		}
+		return bRet;
+	}
+	
+	
 	
 	public  boolean CheckServiceAvailable()
 	{

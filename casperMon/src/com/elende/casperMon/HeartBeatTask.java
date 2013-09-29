@@ -1,16 +1,13 @@
 package com.elende.casperMon;
 
-import java.net.MalformedURLException;
-
-import net.imed_portal.Monitor;
 import net.imed_portal.MonitorSoap;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-public class SkeletonTask implements Runnable {
+public class HeartBeatTask implements Runnable {
 	
-	public static final Logger LOGGER =LogManager.getLogger("com.elende.caspermon.skeletontask");
+	public static final Logger LOGGER =LogManager.getLogger("com.elende.caspermon.heartbeattask");
 	
 	private MonitorSoap proxy = null;	
 	
@@ -50,10 +47,10 @@ public class SkeletonTask implements Runnable {
 	}
 
 	
-	public SkeletonTask(MonitorSoap sp,String username,String pwd)
+	public HeartBeatTask(MonitorSoap sp,String username,String pwd)
 	{
 		//Read my init properties.
-		 System.out.println("Skeleton Task Init");
+		 	System.out.println("HeartBeat Task Init");
 			
 			this.setPwd(pwd);
 			this.setUsername(username);
@@ -90,11 +87,10 @@ public class SkeletonTask implements Runnable {
 
 		
 		if(bServiceAvailable && bReportingAvailable)
-
 		{
-			// Collect facts & figures
-			
-		   
+
+			 boolean ret= wrapper.PutHeartBeat();
+			 LOGGER.debug("HEARTBEAT: "+String.valueOf(ret));
 			
 		}
 		
