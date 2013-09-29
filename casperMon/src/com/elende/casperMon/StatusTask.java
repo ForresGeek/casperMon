@@ -1,12 +1,6 @@
 package com.elende.casperMon;
 
-import java.net.MalformedURLException;
-
-import net.imed_portal.Monitor;
 import net.imed_portal.MonitorSoap;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 public class StatusTask extends ScheduledTask {
 	

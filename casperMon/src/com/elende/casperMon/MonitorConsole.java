@@ -1,12 +1,10 @@
 package com.elende.casperMon;
 
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import net.imed_portal.Monitor;
 import net.imed_portal.MonitorSoap;
@@ -16,7 +14,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.junit.Assert;
 
 
 public class MonitorConsole {
