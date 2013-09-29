@@ -26,7 +26,8 @@ public class MonitorConsole {
 	public static void main(String[] args) throws InterruptedException {
 		// TODO Auto-generated method stub
 		
-	
+	 	final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+		  
 		
 		String wsdl = "http://www.imed-portal.net/cievert_monitor_ws/monitor.asmx?wsdl";
 		String username = "CIEVERT001";
@@ -49,12 +50,16 @@ public class MonitorConsole {
 			 wsdl = config.getString("heridian.wsdl","http://www.imed-portal.net/cievert_monitor_ws/monitor.asmx?wsdl");
 			 username = config.getString("heridian.systemId","CIEVERT001");
 			 pwd = config.getString("heridian.pwd","cievert001");		
+			 
+			
+			 
 			 }
 			 catch (ConfigurationException cex)
 			 {
 				 LOGGER.fatal("Can't get config",cex);
 				 return ;
 			 }
+	
 			 
 	
 			 boolean bInit =false;
@@ -84,13 +89,13 @@ public class MonitorConsole {
 					
 						try{
 							iStatusCheck = imed.GetStatusCheckFreq();
-							iStatusCheck = 127;
+							iStatusCheck = 15;
 							LOGGER.debug("Status check:"+String.valueOf(iStatusCheck));
 					
 					
 							
 							iHeartBeat = imed.GetHeartBeatFreq();
-							iHeartBeat = 27;
+							iHeartBeat = 5;
 							LOGGER.debug("Heartbeat:"+String.valueOf(iHeartBeat));
 					
 							bInit = true;
@@ -123,32 +128,28 @@ public class MonitorConsole {
 			 {
 			  LOGGER.debug("Initialized,scheduling daemons");
 			 
-			  	 	final ScheduledExecutorService heartbeatscheduler = Executors.newScheduledThreadPool(1);
 			  	 	HeartBeatTask hb = new HeartBeatTask(sp,username,pwd);
-			        final ScheduledFuture<?> hbHandler = heartbeatscheduler.scheduleAtFixedRate(hb, iHeartBeat, iHeartBeat, java.util.concurrent.TimeUnit.SECONDS);
+			        final ScheduledFuture<?> hbHandler = scheduler.scheduleAtFixedRate(hb, iHeartBeat, iHeartBeat, java.util.concurrent.TimeUnit.SECONDS);
 			     
 			        System.out.println("HeartBeat Task Scheduled");
 			        
-			  
-			        
-			        
-			  
-			 
-
-			  	 	final ScheduledExecutorService statusscheduler = Executors.newScheduledThreadPool(1);
-			  	 	StatusTask sb = new StatusTask(sp,username,pwd);
-			        final ScheduledFuture<?> statHandler = statusscheduler.scheduleAtFixedRate(sb, iStatusCheck, iStatusCheck, java.util.concurrent.TimeUnit.SECONDS);
-			     
-			        
-			        
-			        
+			        StatusTask sb = new StatusTask(sp,username,pwd);
+			        final ScheduledFuture<?> statHandler = scheduler.scheduleAtFixedRate(sb, iStatusCheck, iStatusCheck, java.util.concurrent.TimeUnit.SECONDS);
 			        System.out.println("StatusCheck Task Scheduled");
-			 
+		
 			        
-			        
+			        scheduler.schedule(new Runnable() {
+		                		public void run() { System.out.println("Killing Poller"); statHandler.cancel(false); hbHandler.cancel(false); scheduler.shutdown();  }
+		            },  60, java.util.concurrent.TimeUnit.SECONDS);
 
 	
-			  
+			   
+			      if(scheduler.isShutdown())
+			      {
+			    	  bInit = false;
+			    	  iRetries = 5;
+			      }
+			        
 			 }
 			 
 			 else
@@ -156,6 +157,9 @@ public class MonitorConsole {
 				 LOGGER.info("Failed to intialize after retries.... exiting");
 				 return;
 			 }
+			 
+			 LOGGER.debug("Exiting.....");
+			 return;
 	}
 
 			 

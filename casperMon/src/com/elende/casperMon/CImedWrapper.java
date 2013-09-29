@@ -13,6 +13,7 @@ import net.imed_portal.MonitorSoap;
 
 public class CImedWrapper {
 
+	private java.util.concurrent.Semaphore flag = new java.util.concurrent.Semaphore(1);
 	private Logger LOGGER;
 	
 	private String username ="";
@@ -60,6 +61,7 @@ public class CImedWrapper {
 		boolean bRet = false;
 		
 		try{
+		flag.acquire();
 		 bRet = proxy.isREPORTINGAVAILABLE(username);
 		}
 		catch(Exception ex)
@@ -67,8 +69,12 @@ public class CImedWrapper {
 			LOGGER.error("CheckReportingAvailable",ex);
 			bRet = false;
 		}
+		finally
+		{	
+			flag.release();
+		
+		}
 		return bRet;
-	
 	}
 	
 	
@@ -78,12 +84,16 @@ public class CImedWrapper {
 		int iRet = -1;
 		
 		try{
+			flag.acquire();
 		 iRet = proxy.getHEARTBEATFREQUENCY(getUsername());
 		}
 		catch(Exception ex)
 		{
 			LOGGER.error("GetHeartBeatFreq",ex);
 			iRet = -1;
+		}
+		finally{
+		flag.release();
 		}
 	
 	return iRet;
@@ -96,12 +106,17 @@ public class CImedWrapper {
 	int iRet = -1;
 		
 		try{
+			flag.acquire();
 		 iRet = proxy.getSTATUSCHECKFREQUENCY(getUsername());
 		}
 		catch(Exception ex)
 		{
 			LOGGER.error("GetStatusCheckFreq",ex);
 			iRet = -1;
+		}
+		finally
+		{
+			flag.release();
 		}
 		return iRet;
 	}
@@ -113,11 +128,15 @@ public class CImedWrapper {
 		boolean bRet=false;
 		try{
 		LOGGER.trace("Sending Heartbeat");
+		flag.acquire();
 		bRet = proxy.putHEARTBEATPULSE(this.getUsername());
 		}
 		catch(Exception ex)
 		{
 			LOGGER.error("Error sending Heartbeat",ex);
+		}
+		finally{
+			flag.release();
 		}
 		return bRet;
 	}
@@ -153,6 +172,7 @@ public class CImedWrapper {
 		
 			LOGGER.debug("Status Check:" + logMessage);
 		
+			flag.acquire();
 			bRet = proxy.putSTATUSCHECKPACKET(username, sDisk[0],sDisk[1],sDisk[2],sDisk[3],sDisk[4], sTemp, sUpTime, sPatientsIN, sReferralsIN, sReferralsLastHour, sUsers, sUsersLastHour);
 
 			
@@ -160,6 +180,9 @@ public class CImedWrapper {
 		catch(Exception ex)
 		{
 			LOGGER.error("Error sending Heartbeat",ex);
+		}
+		finally{
+			flag.release();
 		}
 		return bRet;
 	}
@@ -171,12 +194,16 @@ public class CImedWrapper {
 		boolean bRet = false;
 		
 		try{
+			flag.acquire();
 		 bRet = proxy.isSERVICEAVAILABLE(username);
 		}
 		catch(Exception ex)
 		{
 			LOGGER.error("CheckServiceAvailable",ex);
 			bRet = false;
+		}
+		finally{
+			flag.release();
 		}
 		return bRet;
 	}
@@ -188,12 +215,16 @@ public class CImedWrapper {
 		boolean bRet = false;
 	
 		try{
+			flag.acquire();
 			bRet = proxy.loggedIN(username,password);
 		}
 		catch(Exception ex)
 		{
 			LOGGER.error("Login",ex);
 			bRet = false;
+		}
+		finally{
+			flag.release();
 		}
 		return bRet;
 	}
