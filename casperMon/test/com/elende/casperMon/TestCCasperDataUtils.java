@@ -8,8 +8,10 @@ import org.junit.Test;
 
 public class TestCCasperDataUtils {
 
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		
 	}
 
 	@AfterClass
@@ -18,7 +20,22 @@ public class TestCCasperDataUtils {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented"); // TODO
+		
+		String connectionString = "jdbc:mysql://localhost/casper_3?user=public&password=readonly"
+		CCasperDataUtils casper = new CCasperDataUtils(conectionString);
+		
+		if(casper.isConnected){
+			
+			
+			
+			
+			
+			
+		
+		}else
+		{
+			fail("No Connection"); // TODO
+		}
 	}
 
 }
