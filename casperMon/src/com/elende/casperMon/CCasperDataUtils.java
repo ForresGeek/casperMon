@@ -24,17 +24,49 @@ public class CCasperDataUtils {
 	
 	Connection conn = null;
 	boolean isConnected = false;
-	
+	String connectionString = "";	
 
-	public boolean Connect(String connectionString) throws SQLException
+	public boolean Connect(String cString) throws SQLException
 	{
 		try {
-			LOGGER.debug("Connecting to:"+connectionString);
-			conn =	 DriverManager.getConnection(connectionString);
+			this.connectionString = cString;
+			LOGGER.debug("Connecting to:"+cString);
+			conn =	 DriverManager.getConnection(this.connectionString);
 			this.isConnected = true;
 		} catch (SQLException ex) {
 		    // handle any errors
 			LOGGER.error("Error connecting to MySQL",ex);
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+		    throw ex;
+		}
+		
+		return this.isConnected;
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+
+	public boolean Disconnect() throws SQLException
+	{
+		try {
+			LOGGER.debug("Disconnecting:"+connectionString);
+			
+			if (conn!=null)
+					 conn.close();
+		
+			this.isConnected = false;
+			
+			
+		} catch (SQLException ex) {
+		    // handle any errors
+			LOGGER.error("Error disconnecting MySQL",ex);
 		    System.out.println("SQLException: " + ex.getMessage());
 		    System.out.println("SQLState: " + ex.getSQLState());
 		    System.out.println("VendorError: " + ex.getErrorCode());
@@ -47,6 +79,9 @@ public class CCasperDataUtils {
 		
 		
 	}
+
+	
+	
 	
 		
 	
@@ -116,6 +151,10 @@ public class CCasperDataUtils {
 	
 	
 }
+
+
+
+
 
 
 

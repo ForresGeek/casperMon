@@ -166,21 +166,18 @@ public class CImedWrapper {
 		String sReferralsLastHour = "N/A";
 		boolean connected = false;
 
+		CCasperDataUtils casper = new CCasperDataUtils();
 		
 		
 		try{
 		
-		CCasperDataUtils casper = new CCasperDataUtils();
 		connected = casper.Connect(connectionString);
-		
-		
-		
 		if(connected)
 		{
 			
-			sPatientsIn = String.valueOf(CCasperDataUtils.GetPatientsIn());
-			sReferralsIn = String.valueOf(CCasperDataUtils.GetReferralsIn());
-			sReferralsLastHour = String.valueOf(CCasperDataUtils.GetReferralsLastHour());
+			sPatientsIn = String.valueOf(casper.GetPatientsIn());
+			sReferralsIn = String.valueOf(casper.GetReferralsIn());
+			sReferralsLastHour = String.valueOf(casper.GetReferralsLastHour());
 		}
 			
 		}
