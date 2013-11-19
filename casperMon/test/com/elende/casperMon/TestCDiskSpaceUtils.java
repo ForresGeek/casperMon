@@ -5,20 +5,24 @@ import junit.framework.Assert;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestCDiskSpaceUtils {
 
+	
+	@Ignore
 	@Test
 	public void testDiskSpace() {
 		
 		String sSpace = CDiskSpaceUtils.GetDiskSpace("/Users");
+		
 		assertTrue(sSpace!="");
 		assertTrue(sSpace.matches("\\d+\\s+"));
 		System.out.println("space:"+sSpace);
 	}
 
-	
+	@Ignore
 	@Test
 	public void testGetFileSystemList()
 	{

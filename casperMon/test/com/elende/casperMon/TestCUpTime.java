@@ -2,6 +2,7 @@ package com.elende.casperMon;
 
 import static org.junit.Assert.*;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestCUpTime {
@@ -11,18 +12,10 @@ public class TestCUpTime {
 		
 	String luptime = CUpTime.GetSystemUpTime();
 	System.out.println("Uptime:"+luptime);
+	Assert.assertTrue(luptime.length()>0);
 	//assert.assertTrue(    luptime > 37000L);
 	
 	}
 
-	@Test
-	public void testGetUsers() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public void testGetUsersLastHour() {
-		fail("Not yet implemented"); // TODO
-	}
 
 }

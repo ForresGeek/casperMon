@@ -52,8 +52,7 @@ public class CImedWrapper {
 		this.setProxy(sp);
 		this.setUsername(username);
 		this.setPassword(pwd);
-	
-	}
+		}
 	
 	public  boolean CheckReportingAvailable()
 	{
@@ -164,34 +163,13 @@ public class CImedWrapper {
 		String sPatientsIn ="N/A";
 		String sReferralsIn = "N/A";
 		String sReferralsLastHour = "N/A";
-		boolean connected = false;
-
+		
 		CCasperDataUtils casper = new CCasperDataUtils();
 		
-		
-		try{
-		
-		connected = casper.Connect(connectionString);
-		if(connected)
-		{
 			
 			sPatientsIn = String.valueOf(casper.GetPatientsIn());
 			sReferralsIn = String.valueOf(casper.GetReferralsIn());
 			sReferralsLastHour = String.valueOf(casper.GetReferralsLastHour());
-		}
-			
-		}
-		catch(Exception ex)
-		{
-		
-		}
-		finally
-		{
-			if(connected)
-				casper.Disconnect();
-		}
-		
-		
 		
 		
 		
@@ -201,12 +179,12 @@ public class CImedWrapper {
 		String[] sDisk = new String[]{ CDiskSpaceUtils.GetDiskSpace(sFileSystems[0]),CDiskSpaceUtils.GetDiskSpace(sFileSystems[1]),CDiskSpaceUtils.GetDiskSpace(sFileSystems[2]),CDiskSpaceUtils.GetDiskSpace(sFileSystems[3]),CDiskSpaceUtils.GetDiskSpace(sFileSystems[4])};
 		
 
-			String logMessage = String.format("DISK0: %s\nDISK1: %s\nDISK2: %s\nDISK3: %s\nDISK4: %s\nTemp: %s\nUptime: %s\nPatients: %s\nReferrals: %s\nReferrals Last Hour: %s\nUsers: %s\nUsers Last Hour: %s", sDisk[0],sDisk[1],sDisk[2],sDisk[3],sDisk[4], sTemp, sUpTime, sPatientsIN, sReferralsIN, sReferralsLastHour, sUsers, sUsersLastHour);
+			String logMessage = String.format("DISK0: %s\nDISK1: %s\nDISK2: %s\nDISK3: %s\nDISK4: %s\nTemp: %s\nUptime: %s\nPatients: %s\nReferrals: %s\nReferrals Last Hour: %s\nUsers: %s\nUsers Last Hour: %s", sDisk[0],sDisk[1],sDisk[2],sDisk[3],sDisk[4], sTemp, sUpTime, sPatientsIn, sReferralsIn, sReferralsLastHour, sUsers, sUsersLastHour);
 		
 			LOGGER.debug("Status Check:" + logMessage);
 		
 			flag.acquire();
-			bRet = proxy.putSTATUSCHECKPACKET(username, sDisk[0],sDisk[1],sDisk[2],sDisk[3],sDisk[4], sTemp, sUpTime, sPatientsIN, sReferralsIN, sReferralsLastHour, sUsers, sUsersLastHour);
+			bRet = proxy.putSTATUSCHECKPACKET(username, sDisk[0],sDisk[1],sDisk[2],sDisk[3],sDisk[4], sTemp, sUpTime, sPatientsIn, sReferralsIn, sReferralsLastHour, sUsers, sUsersLastHour);
 
 			
 		}
