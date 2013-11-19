@@ -157,9 +157,45 @@ public class CImedWrapper {
 		String sTemp = CTemp.GetSystemTemperature();
 		String sUpTime = CUpTime.GetSystemUpTime();
 		
-		String sPatientsIN = String.valueOf(CCasperDataUtils.GetPatientsIn());
-		String sReferralsIN = String.valueOf(CCasperDataUtils.GetReferralsIn());
-		String sReferralsLastHour = String.valueOf(CCasperDataUtils.GetReferralsLastHour());
+		
+		
+		
+		
+		String sPatientsIn ="N/A";
+		String sReferralsIn = "N/A";
+		String sReferralsLastHour = "N/A";
+		boolean connected = false;
+
+		
+		
+		try{
+		
+		CCasperDataUtils casper = new CCasperDataUtils();
+		connected = casper.Connect(connectionString);
+		
+		
+		
+		if(connected)
+		{
+			
+			sPatientsIn = String.valueOf(CCasperDataUtils.GetPatientsIn());
+			sReferralsIn = String.valueOf(CCasperDataUtils.GetReferralsIn());
+			sReferralsLastHour = String.valueOf(CCasperDataUtils.GetReferralsLastHour());
+		}
+			
+		}
+		catch(Exception ex)
+		{
+		
+		}
+		finally
+		{
+			if(connected)
+				casper.Disconnect();
+		}
+		
+		
+		
 		
 		
 		String sUsers = String.valueOf(CUpTime.GetUsers());
