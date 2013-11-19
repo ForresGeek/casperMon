@@ -1,19 +1,7 @@
 package com.elende.casperMon;
 
-
-
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-
 public class CCasperDataUtils {
-
-	public  final Logger LOGGER =LogManager.getLogger("com.elende.caspermon.CCasperDataUtils"); 
+	
 	
 	/*
 	 * Connect to MySQL database (CasPer), and run various queries.
@@ -22,60 +10,23 @@ public class CCasperDataUtils {
 	 */
 	
 	
-	Connection conn = null;
-	boolean isConnected = false;
-	
-
-	public boolean Connect(String connectionString) throws SQLException
+	public static int GetReferralsIn()
 	{
-		try {
-			LOGGER.debug("Connecting to:"+connectionString);
-			conn =	 DriverManager.getConnection(connectionString);
-			this.isConnected = true;
-		} catch (SQLException ex) {
-		    // handle any errors
-			LOGGER.error("Error connecting to MySQL",ex);
-		    System.out.println("SQLException: " + ex.getMessage());
-		    System.out.println("SQLState: " + ex.getSQLState());
-		    System.out.println("VendorError: " + ex.getErrorCode());
-		    throw ex;
-		}
-		
 	
-		
-		return this.isConnected;
-		
-		
-	}
-	
-		
-	
-	
-	
-	public  int GetReferralsIn()
-	{
-
-		//select count(*) from Request where received > CURRENT_TIMESTAMP - INTERVAL 1 DAY;
-		//conn.
-		
 		
 		return 99;
 	}
 	
 	
-	public  int GetReferralsLastHour()
+	public static int GetReferralsLastHour()
 	{
 	
 		return 99;
 	}
 
 	
-	public  int GetPatientsIn()
+	public static int GetPatientsIn()
 	{
-		
-		//select count(*) from Patient;
-		
-		
 	
 		return 99;
 	}
@@ -84,41 +35,7 @@ public class CCasperDataUtils {
 	public static int GetInRefNum()
 	{
 	
-		
-		
-		
 		return 99;
 	}
-	
-	
-	public  int GetRegisteredUsers()
-	{
-	
-		
-		//select count(*) from Access_SYS where enabled=1
-		
-				
-		//select count(distinct(userid)) from login_SYS where instant > CURRENT_TIMESTAMP - INTERVAL 1 HOUR;
-		
-		return 99;
-	}
-	
-	
-
-	public  int GetActiveUsersLastHour()
-	{
-		//select count( distinct(`who`)) from auditTrail_SYS where `when` > CURRENT_TIMESTAMP - INTERVAL 1 HOUR ;
-
-		return 99;
-	}
-	
-	
-	
 	
 }
-
-
-
-
-
-
