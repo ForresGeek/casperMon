@@ -107,10 +107,10 @@ public class CCasperDataUtils {
 			 
 			 skeletonconnectionString = config.getString("casper.connection","jdbc:mysql://%s/%s?user=%s&password=%s");
 			 host = config.getString("casper.host","localhost");
-			 casperDB = config.getString("casper.casperDB","casper_3");
-			 webDB = config.getString("casper.webDB","mywebif_4");		
-			 user = config.getString("casper.user","public");
-			 pwd = config.getString("casper.pwd","readonly");
+			 casperDB = config.getString("casper.CasDB","casper_3");
+			 webDB = config.getString("casper.WebDB","mywebif_4");		
+			 user = config.getString("casper.username","public");
+			 pwd = config.getString("casper.password","readonly");
 			
 			 
 			 }
@@ -136,7 +136,7 @@ public class CCasperDataUtils {
 			LOGGER.debug("Connecting to:"+cString);
 			
 			
-			conn = (Connection) DriverManager.getConnection(connectionString);
+			this.conn = (Connection) DriverManager.getConnection(connectionString);
 			this.isConnected = true;
 		} catch (SQLException ex) {
 		    // handle any errors
@@ -160,7 +160,6 @@ public class CCasperDataUtils {
 					 conn.close();
 		
 			this.isConnected = false;
-			
 			
 		} catch (SQLException ex) {
 		    // handle any errors
@@ -207,9 +206,6 @@ public class CCasperDataUtils {
 		
 	public static int GetInRefNum()
 	{
-	
-		
-		
 		
 		return 99;
 	}
@@ -242,6 +238,7 @@ public class CCasperDataUtils {
 		if (this.Connect(connectionString))
 			{			
 		  	try {
+		  		  LOGGER.debug("Effective connection string:"+connectionString);
 		  		  PreparedStatement  stmt = (PreparedStatement) conn.serverPrepareStatement(query);
 				  ResultSet rs = stmt.executeQuery();
 				  iRet= rs.getInt(0);

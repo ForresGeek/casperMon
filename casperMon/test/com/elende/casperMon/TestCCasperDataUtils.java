@@ -24,7 +24,7 @@ public class TestCCasperDataUtils {
 	}
 
 	
-
+	@Ignore
 	@Test
 	public void testConfig() throws SQLException {
 		CCasperDataUtils casper = new CCasperDataUtils();		
